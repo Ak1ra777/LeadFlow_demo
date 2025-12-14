@@ -135,54 +135,9 @@ LEADFLOW-AI/
 ├─ README.md
 └─ .env               # secrets (not committed)
 
-▶️ Run the demo (local)
-1) Create venv + install dependencies
+## ▶️ Run the demo (local)
+
+### 1) Install dependencies
+```bash
 pip install -r requirements.txt
 
-2) Create .env
-OPENAI_API_KEY=...
-
-VAPI_PUBLIC_KEY=...
-VAPI_ASSISTANT_ID=...
-
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_DB=...
-POSTGRES_USER=...
-POSTGRES_PASSWORD=...
-
-COMPANY_NAME=...
-COMPANY_CITY=...
-
-3) Create Postgres table
-CREATE TABLE IF NOT EXISTS leads (
-  id BIGSERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
-  phone TEXT NOT NULL UNIQUE,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
-4) Ingest PDF into ChromaDB
-python ingestion.py
-
-5) Run backend
-uvicorn app.server:app_server --reload --port 8000
-
-6) Run the website (Live Server)
-
-Open the project in VS Code
-
-Install the extension Live Server (by Ritwick Dey)
-
-Open client/index.html
-
-Right-click → Open with Live Server
-
-7) Start ngrok (required for the demo)
-
-Because the FastAPI backend runs locally, Vapi must reach it through a public HTTPS URL.
-
-ngrok http 8000
-
-
-Copy the HTTPS forwarding URL (example: https://xxxx.ngrok-free.app) and use it in your Vapi assistant configuration as the backend URL.
