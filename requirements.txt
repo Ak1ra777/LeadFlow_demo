@@ -1,0 +1,22 @@
+# --- Core Server & API ---
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+ngrok>=1.5.0               # <--- ADDED: To create the public HTTPS tunnel for Vapi
+
+# --- AI & LLM Orchestration ---
+langchain>=0.1.0
+langchain-openai>=0.0.5
+langchain-community>=0.0.10
+langgraph>=0.0.10
+openai>=1.10.0
+tiktoken>=0.5.2
+
+# --- Database & RAG ---
+chromadb>=0.4.22
+psycopg2-binary>=2.9.9     # <--- ADDED: Essential for Supabase/PostgreSQL connection from Python
+
+# --- Document Processing (Ingestion) ---
+pypdf>=4.0.0               # For reading PDFs
+# pymupdf                  # Alternative if pypdf fails (optional)

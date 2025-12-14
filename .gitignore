@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual env / secrets
+.venv/
+.env
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# RAG / local DB artifacts
+chroma_db/
+*.sqlite3

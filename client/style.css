@@ -1,0 +1,240 @@
+/* =========================================
+   1. GLOBAL STYLES (Dark Background)
+   ========================================= */
+body {
+    background-color: #0f172a; /* Dark Navy/Black background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* =========================================
+   2. PHONE HARDWARE (The Frame)
+   ========================================= */
+.phone-bezel {
+    width: 340px;
+    height: 680px;
+    background: #000;
+    border-radius: 45px;
+    border: 8px solid #333; /* Dark Grey Metal Frame */
+    /* Realistic shadow and inner reflection */
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8, inset 0 0 20px rgba(255, 255, 255, 0.1));
+    position: relative;
+    padding: 15px; /* Bezel thickness inside */
+    box-sizing: border-box;
+}
+
+/* The "Notch" at the top */
+.notch {
+    width: 120px;
+    height: 25px;
+    background: #000;
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    z-index: 10;
+}
+
+/* =========================================
+   3. PHONE SCREEN (The App UI)
+   ========================================= */
+.screen {
+    width: 100%;
+    height: 100%;
+    /* Deep Blue/Black Gradient for the App Background */
+    background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); 
+    border-radius: 35px;
+    overflow: hidden;
+    position: relative;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-content {
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* --- Header Status Bar (5G, Logo, Battery) --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 25px; /* Clear the notch */
+    font-weight: 600;
+}
+
+.logo { 
+    color: white; 
+    letter-spacing: 1px; 
+}
+
+/* =========================================
+   4. MAIN DISPLAY (Avatar & Visualizer)
+   ========================================= */
+.main-display {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+/* Avatar Circle */
+.avatar-circle {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+}
+
+.avatar-emoji { 
+    font-size: 3rem; 
+}
+
+/* Pulse Animation Ring (Active when calling) */
+.pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid rgba(139, 92, 246, 0.5);
+    opacity: 0;
+}
+.pulse-ring.active { 
+    animation: pulse 2s infinite; 
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+h2 { 
+    font-weight: 400; 
+    font-size: 1.5rem; 
+    margin: 0; 
+}
+
+.status-text { 
+    color: #94a3b8; 
+    font-size: 0.9rem; 
+    margin-top: 5px; 
+    height: 20px; 
+}
+
+/* --- Audio Visualizer (Waveform) --- */
+.visualizer {
+    display: flex;
+    gap: 5px;
+    height: 30px;
+    align-items: center;
+    margin-top: 20px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.visualizer.speaking { 
+    opacity: 1; 
+}
+
+.bar {
+    width: 5px;
+    background: #3b82f6;
+    border-radius: 10px;
+    height: 5px;
+    animation: none;
+}
+/* Only animate when the 'speaking' class is added by JS */
+.visualizer.speaking .bar { 
+    animation: wave 0.8s infinite ease-in-out; 
+}
+
+/* Stagger the animation for a wave effect */
+.bar:nth-child(1) { animation-delay: 0.1s; }
+.bar:nth-child(2) { animation-delay: 0.2s; height: 10px; }
+.bar:nth-child(3) { animation-delay: 0.3s; height: 15px; }
+.bar:nth-child(4) { animation-delay: 0.2s; height: 10px; }
+.bar:nth-child(5) { animation-delay: 0.1s; }
+
+@keyframes wave {
+    0%, 100% { height: 5px; }
+    50% { height: 25px; }
+}
+
+/* =========================================
+   5. CONTROLS (The Button) - CORRECTED
+   ========================================= */
+.controls {
+    margin-bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.call-btn {
+    width: 100%;
+    padding: 18px;
+    background: #22c55e; /* Green */
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+    transition: all 0.3s ease; /* Smooth hover transition */
+    
+    /* FLEXBOX ALIGNMENT FIXES */
+    display: flex;
+    align-items: center;     /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    gap: 12px;               /* Space between icon and text */
+}
+
+/* Hover Effect: Float up and Glow */
+.call-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
+    background: #16a34a; /* Slightly darker green */
+}
+
+.call-btn:active { 
+    transform: scale(0.95); 
+}
+
+/* Styles for when the call is Active (Red Button) */
+.call-btn.active {
+    background: #ef4444; /* Red */
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+}
+
+.call-btn.active:hover {
+    background: #dc2626;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.5);
+}
+
+/* Ensure the emoji icon lines up perfectly */
+.call-btn .icon {
+    display: flex;
+    align-items: center;
+    font-size: 1.3rem;
+    line-height: 1;
+}

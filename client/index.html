@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeadFlow AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="phone-bezel">
+    <div class="notch"></div>
+    <div class="screen">
+      <div class="app-content">
+        <div class="header">
+          <span class="signal">5G</span>
+          <span class="logo">LeadFlow AI</span>
+          <span class="battery">100%</span>
+        </div>
+
+        <div class="main-display">
+          <div class="avatar-circle">
+            <span class="avatar-emoji">🎙️</span>
+            <div class="pulse-ring" id="pulse-ring"></div>
+          </div>
+
+          <h2>Sales Agent</h2>
+          <p class="status-text" id="status-text">Ready to connect</p>
+
+          <div id="visualizer" class="visualizer">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="call-btn" class="call-btn">
+            <span class="icon">📞</span> Call Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import Vapi from "https://cdn.jsdelivr.net/npm/@vapi-ai/web/+esm";
+
+    // ✅ Set this to your backend base URL
+    // Local:
+    const API_BASE = "http://127.0.0.1:8000";
+    // If using ngrok, change to:
+    // const API_BASE = "https://YOUR_NGROK_DOMAIN.ngrok-free.app";
+
+    const btn = document.getElementById("call-btn");
+    const statusText = document.getElementById("status-text");
+    const visualizer = document.getElementById("visualizer");
+    const pulseRing = document.getElementById("pulse-ring");
+
+    let isCallActive = false;
+    let vapi = null;
+    let assistantId = "";
+
+    async function loadVapiConfig() {
+      statusText.innerText = "Loading config...";
+
+      const res = await fetch(`${API_BASE}/vapi-config`);
+      if (!res.ok) throw new Error("Failed to load /vapi-config");
+
+      const cfg = await res.json();
+      const publicKey = cfg.publicKey;
+      assistantId = cfg.assistantId;
+
+      if (!publicKey || !assistantId) {
+        throw new Error("Backend did not return publicKey/assistantId");
+      }
+
+      // ESM default export compatibility
+      const VapiClient = Vapi.default ?? Vapi;
+      vapi = new VapiClient(publicKey);
+
+      // --- EVENTS ---
+      vapi.on("call-start", () => {
+        isCallActive = true;
+        btn.classList.add("active");
+        btn.innerHTML = "❌ End Call";
+        statusText.innerText = "Connected";
+        statusText.style.color = "#4ade80";
+        pulseRing.classList.add("active");
+      });
+
+      vapi.on("call-end", () => {
+        isCallActive = false;
+        btn.classList.remove("active");
+        btn.innerHTML = '<span class="icon">📞</span> Call Now';
+        statusText.innerText = "Call Ended";
+        statusText.style.color = "#94a3b8";
+        pulseRing.classList.remove("active");
+        visualizer.classList.remove("speaking");
+
+        setTimeout(() => {
+          statusText.innerText = "Ready to connect";
+          statusText.style.color = "";
+        }, 1500);
+      });
+
+      vapi.on("speech-start", () => {
+        visualizer.classList.add("speaking");
+        statusText.innerText = "Listening...";
+        statusText.style.color = "";
+      });
+
+      vapi.on("speech-end", () => {
+        visualizer.classList.remove("speaking");
+        statusText.innerText = "Speaking...";
+        statusText.style.color = "";
+      });
+
+      vapi.on("error", (e) => {
+        console.error("Vapi error:", e);
+        statusText.innerText = "Error (check console)";
+        statusText.style.color = "red";
+      });
+
+      statusText.innerText = "Ready to connect";
+      statusText.style.color = "";
+    }
+
+    btn.addEventListener("click", async () => {
+      try {
+        if (!vapi) await loadVapiConfig();
+
+        if (!isCallActive) {
+          // ✅ FIX: use the assistantId we loaded
+          vapi.start(assistantId);
+          statusText.innerText = "Connecting...";
+          statusText.style.color = "";
+        } else {
+          vapi.stop();
+        }
+      } catch (err) {
+        console.error(err);
+        statusText.innerText = "Config/Error (check console)";
+        statusText.style.color = "red";
+      }
+    });
+  </script>
+</body>
+</html>
