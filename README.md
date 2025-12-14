@@ -160,3 +160,45 @@ POSTGRES_PASSWORD=...
 COMPANY_NAME=...
 COMPANY_CITY=...
 ```
+3) Create Postgres table
+
+Run this in your Postgres client:
+```bash
+CREATE TABLE IF NOT EXISTS leads (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+```
+
+4) Ingest PDF into ChromaDB
+ ```bash
+   python ingestion.py
+   ```
+
+5) Run backend
+ ```bash
+uvicorn app.server:app_server --reload --port 8000
+ ```
+
+6) Run the website (Live Server)
+
+Open the project in VS Code
+
+Install the extension Live Server (by Ritwick Dey)
+
+Open client/index.html
+
+Right-click → Open with Live Server
+
+7) Start ngrok (required for the demo)
+
+Because the FastAPI backend runs locally, Vapi must reach it through a public HTTPS URL.
+
+```bash
+ngrok http 8000
+```
+
+
+Copy the HTTPS forwarding URL (example: https://xxxx.ngrok-free.app) and set it as the backend URL in your Vapi assistant configuration.
