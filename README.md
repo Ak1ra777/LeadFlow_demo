@@ -83,3 +83,106 @@ graph LR
   G -->|save_lead_mock| P[(Postgres: leads table)]
   S -->|TTS-safe response| V
   S -->|endCall tool| V
+```
+
+
+🏆 Accomplishments we’re proud of
+
+1)Built a real voice agent, not just a chatbot
+
+2)RAG answers are grounded in a PDF knowledge base (trusted business info)
+
+3)Captures real leads into a real database
+
+4)End-to-end demo: Call → Answer → Qualify → Save lead → End call
+
+5)Implemented a Georgian-speaking assistant fast while keeping it reliable
+
+📚 What we learned
+
+1)Voice agents need stricter guardrails than chat (forcing tool use + short answers)
+
+2)LangGraph makes multi-step conversational workflows easier to control and debug
+
+3)General workflow for AI agents: define states, define tools, enforce tool rules, iterate using real conversation logs
+
+4)Small UX details matter a lot in voice (number formatting, confirmations, end-of-call behavior)
+
+🚀 What’s next for LeadFlow
+
+1)Phone number support (real inbound calls, not only website)
+
+2)Better Georgian handling (more natural speech, better number pronunciation, clearer understanding)
+
+3)Expand what businesses can automate (lead qualification, intake forms over the phone, routing, summarized leads to the team)
+
+4)More business control (easy updates to company info so the assistant stays accurate)
+
+📁 Project structure
+LEADFLOW-AI/
+├─ app/
+│  ├─ graph.py        # LangGraph flow + tools + number-to-words helpers
+│  ├─ rag.py          # Chroma retrieval
+│  └─ server.py       # FastAPI server (vapi-config + streaming)
+├─ client/
+│  ├─ index.html      # Website UI (Vapi WebRTC)
+│  └─ style.css
+├─ data/
+│  └─ company_policy.pdf
+├─ chroma_db/         # generated after ingestion
+├─ ingestion.py       # PDF → chunks → embeddings → Chroma
+├─ requirements.txt
+├─ README.md
+└─ .env               # secrets (not committed)
+
+▶️ Run the demo (local)
+1) Create venv + install dependencies
+pip install -r requirements.txt
+
+2) Create .env
+OPENAI_API_KEY=...
+
+VAPI_PUBLIC_KEY=...
+VAPI_ASSISTANT_ID=...
+
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=...
+POSTGRES_USER=...
+POSTGRES_PASSWORD=...
+
+COMPANY_NAME=...
+COMPANY_CITY=...
+
+3) Create Postgres table
+CREATE TABLE IF NOT EXISTS leads (
+  id BIGSERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  phone TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+4) Ingest PDF into ChromaDB
+python ingestion.py
+
+5) Run backend
+uvicorn app.server:app_server --reload --port 8000
+
+6) Run the website (Live Server)
+
+Open the project in VS Code
+
+Install the extension Live Server (by Ritwick Dey)
+
+Open client/index.html
+
+Right-click → Open with Live Server
+
+7) Start ngrok (required for the demo)
+
+Because the FastAPI backend runs locally, Vapi must reach it through a public HTTPS URL.
+
+ngrok http 8000
+
+
+Copy the HTTPS forwarding URL (example: https://xxxx.ngrok-free.app) and use it in your Vapi assistant configuration as the backend URL.
