@@ -89,7 +89,6 @@ graph LR
   S -->|TTS-safe response| V
   S -->|endCall tool| V
 
----
 
 🏆 Accomplishments we’re proud of
 
